@@ -1,3 +1,10 @@
+<?php
+
+header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: ;
+                                 style-src   'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com ;
+                                 font-src    https://maxcdn.bootstrapcdn.com ; ");
+
+?>
 <!DOCTYPE html>
 <html lang="hu">
 <head>
