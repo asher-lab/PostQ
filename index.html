@@ -17,14 +17,14 @@
   <title>PostQ</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
   <!-- Basic external JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="external/jquery(1.12.4).min.js"></script>
+  <script src="external/bootstrap(3.3.6).min.js"></script>
   <!-- Additional external JS -->
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.0/jquery.scrollTo.min.js"></script>
+  <script src="external/jquery.scrollTo(2.1.0).min.js"></script>
   <script src="external/scrypt.js" type="text/javascript"></script>
     <!-- Dependencies of scrypt-->
   <script src="external/setImmediate.js" type="text/javascript"></script>
@@ -45,9 +45,6 @@
   <script src="getFriendList.js" type="text/javascript"></script>
   <script src="show.js" type="text/javascript"></script>
 
-  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-  <script src="call.js" async></script>
-  <script src="signalMsg.js" type="text/javascript"></script>
 </head>
 <body onload="pageLoaded()">
 
@@ -117,10 +114,6 @@
         <div id="friendrequestsouter"></div>
       </div> <!-- friendRequests -->
 
-<div id="videobox" style="display: none;">
-    <video id="localVideo" playsinline autoplay muted></video>
-    <video id="remoteVideo" playsinline autoplay></video>
-  </div>
       <div class="container-fluid height100" id="messagesouter">
         <div id="alertMessages"></div>
         <div class="pre-scrollable height100" id="messages">
@@ -129,8 +122,6 @@
         <div id="textarea">
           <textarea class="form-control" id="newmsg" rows="4" onkeydown="if(event.keyCode == 13) return false;" onkeyup="if(event.keyCode == 13) send();"></textarea>
         </div>
-        <button id="callButton">Call</button>
-        <button id="hangupButton">End</button>
 
       </div> <!-- container-fluid -->
 

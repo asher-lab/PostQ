@@ -54,7 +54,6 @@ function showMessages(username, userid, symkey) {
   function(data, status){
     $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");
-    var signalingMsgs = []
     for(var i=0; i<messages.length; i++) {
       if(messages[i] != "") {
         var fromTo = messages[i].substring(0,1);
@@ -74,28 +73,11 @@ function showMessages(username, userid, symkey) {
         } else if(fromTo == '0' && msgIdi > msgIduser2){
           msgIduser2 = msgIdi;
           $('#messages').append('<div class="msgToMe">' + msg + '</div>');
-        } //handling calls
-        else if(fromTo == '0' && msgIdi == 0){
-          timestamp=parseInt(decIdAndMsg.split("&")[2])
-          if(timestamp+10000>Date.now()){
-          msg=decIdAndMsg.split("&")[1]
-          signalingMsgs.push(msg)
-          }
 
         }
         if(i != 0 && i % warnSymkeyExchangeEvery == 0)
           $('#messages').append('<div>Reminder: Consider to change secret code.</div>');
       }
-    }
-    //if call params were recieved
-    if (signalingMsgs.length > 2)
-    {
-      if (!initiator){
-      onOfferRecieved(signalingMsgs)
-    } else {
-      onAnswerRecived(signalingMsgs)
-    }
-
     }
 
     $('#addnewfriend').hide();
