@@ -58,6 +58,7 @@ function showMessages(friend_username, friend_id, symkey) {
   $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: current_friend_id },
 
   function(data, status){
+    var newdiv;
     $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");
     for(var i=0; i<messages.length; i++) {
@@ -68,18 +69,20 @@ function showMessages(friend_username, friend_id, symkey) {
         var decIdAndMsg = AESdecryptCTR(idAndMsg, msgSymKey, msgNonce);
         if(decIdAndMsg.indexOf(";") == -1) //error decoding or outdated symkey
           continue;
-        var decIdAndMsgA = decIdAndMsg.split(";");
-        var msg = decIdAndMsgA[1];
-        var msgIdi = parseInt(decIdAndMsgA[0]);
-        if(msgIdi == 00 && decIdAndMsgA[0].length != 1) //error decoding or outdated symkey
+        var msgIdi = parseInt(decIdAndMsg.substring(0, decIdAndMsg.indexOf(";")));
+        var msg = decIdAndMsg.substring(decIdAndMsg.indexOf(";")+1);
+        if(msgIdi == 00 && decIdAndMsg.indexOf(";") != 1) //error decoding or outdated symkey
           continue;
         if(fromTo == '1' && msgIdi > msgId) {
           msgId = msgIdi;
-          $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
+          newdiv = $('<div class="msgFromMe"></div>');
+          newdiv.text(msg);
+          $('#messages').append(newdiv);
         } else if(fromTo == '0' && msgIdi > msgIduser2){
           msgIduser2 = msgIdi;
-          $('#messages').append('<div class="msgToMe">' + msg + '</div>');
-
+          newdiv = $('<div class="msgToMe"></div>');
+          newdiv.text(msg);
+          $('#messages').append(newdiv);
         }
         if(i != 0 && i % warnSymkeyExchangeEvery == 0)
           $('#messages').append('<div>Reminder: Consider to change secret code.</div>');

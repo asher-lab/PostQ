@@ -21,7 +21,7 @@ function pageLoaded() {
   document.getElementById('btn_register').addEventListener('click', register);
   document.getElementById('btn_addFriend').addEventListener('click', addFriend);
   document.getElementById('btn_changeSymKey').addEventListener('click', changeSymkey);
-  document.getElementById('newmsg').addEventListener('keyup'  , process_send_event );
+  document.getElementById('newmsg').addEventListener('keydown'  , process_send_event );
   document.getElementById('inputPassword').addEventListener('keyup'  , function (event) { if(event.keyCode == 13) signin(); } );
   document.getElementById('inputFriendEmail').addEventListener('keyup'  , function (event) { if(event.keyCode == 13) addFriend(); } );
 }
@@ -36,7 +36,6 @@ function send(text) {
   if(msg=="")
     return;
   var msgWithId = msgId.toString() + ";" + msg;
-  
   var nonce = secureRandom(8);
   var encMsg = AESencryptCTR(msgWithId,msgSymKey,nonce);
   var hexNonce = ByteArray_2_HexString(nonce);
@@ -44,7 +43,9 @@ function send(text) {
   function(data, status){
     if(data == 1) { //if success, display message
       $("#alertMessages").hide(); //hide the alert
-      $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
+      var new_div = $('<div class="msgFromMe"></div>');
+      new_div.text(msg);
+      $('#messages').append(new_div);
       $('#messages').scrollTo("max",500);
     } else {
       displayAlert("#alertMessages","danger","Sending message failed. " + data);
