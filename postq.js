@@ -43,7 +43,7 @@ function send(text) {
   function(data, status){
     if(data == 1) { //if success, display message
       $("#alertMessages").hide(); //hide the alert
-      var new_div = $('<div class="msgFromMe"></div>');
+      var new_div = $('<div class="msgFromMe_noRefresh"></div>');
       new_div.text(msg);
       $('#messages').append(new_div);
       $('#messages').scrollTo("max",500);
@@ -55,8 +55,10 @@ function send(text) {
 
 function process_send_event(event) {
   if(event.keyCode == 13) {
-    if(event.ctrlKey == false)
+    if(event.ctrlKey == false){
       send();
+      event.preventDefault();
+    }
     else
       $('#newmsg').val($('#newmsg').val()+"\n");
   }

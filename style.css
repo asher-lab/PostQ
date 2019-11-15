@@ -167,12 +167,18 @@ li {
   background-color: #9FD356;
 }
 
+.msgFromMe_noRefresh {
+  margin-left: 10% !important;
+  color: #909090;
+  background-color: #9FD356;
+}
+
 .msgToMe {
   margin-right: 10% !important;
   background-color: #c0c6bc;
 }
 
-.msgFromMe, .msgToMe {
+.msgFromMe, .msgToMe, .msgFromMe_noRefresh {
   padding: 5px;
   margin: 10px;
   border-radius: 10px;
