@@ -14,6 +14,7 @@ function showAddNewFriend() {
   clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
   $('#friendRequests').hide();
+  $("#alertMessages").hide();
   $('#alertNewFriend').empty();
   $('.msgtitle').text('Add new friend');
   $('#addnewfriend').show();
@@ -24,32 +25,37 @@ function showFriendRequests() {
   clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
   $('#addnewfriend').hide();
+  $("#alertMessages").hide();
   $('.msgtitle').text('Manage friend requests');
   $('#alertFriendRequests').empty();
   $('#friendRequests').show();
   markSelected("menuFriendRequests");
-  handleFriendRequests()
+  handleFriendRequests();
 }
 
-var user2Id;
+var current_friend_id;
+var current_friend_username;
 var msgSymKey;
 var messageUpdateTimer;
 var messageTimeout = 5; //in second
 var msgId;
-var msgIduser2;
 const warnSymkeyExchangeEvery = 20 //messages
 
-function showMessages(username, userid, symkey) {
+function showMessages(friend_username, friend_id, symkey) {
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
 
-  user2Id = userid;
+  if (current_friend_id != friend_id) {
+    $("#alertMessages").hide();
+    current_friend_id = friend_id;
+    current_friend_username = friend_username;
+  }
   msgId = 0;
-  msgIduser2 = 0;
+  var msgIduser2 = 0;
 
   //decrypt symmetric key
   msgSymKey = AESdecryptCBC_arr(symkey, decryptionkey);
  
-  $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: user2Id },
+  $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: current_friend_id },
 
   function(data, status){
     $('#messages').empty(); //clear previous messages
@@ -82,17 +88,22 @@ function showMessages(username, userid, symkey) {
 
     $('#addnewfriend').hide();
     $('#friendRequests').hide();
-    $('.msgtitle').html(username + ' <a href="javascript:changeSymkey(\'' + username + '\', ' + userid + ')"><span class="glyphicon glyphicon-flash" title="Delete all my messages and enforce new secret code"></span></a>');
+    $('.msgtitle').text(current_friend_username);
     $('#messagesouter').show();
     $('#messages').scrollTo("max");
-    markSelected("menuMsgs"+userid);
-    messageUpdateTimer = setTimeout(function(){showMessages(username, userid, symkey);}, messageTimeout*1000);
+    messageUpdateTimer = setTimeout(function(){showMessages(current_friend_username, current_friend_id, symkey);}, messageTimeout*1000);
+    for (var i=0 ; i < friends.length; i++) {
+	  if(friends[i][1]==current_friend_id) {
+        markSelected('menuMsgs_'+i.toString());
+        break;
+      }
+    }
   });
 }
 
-function changeSymkey(username, userid) {
+function changeSymkey() {
 
-  $.post("getPublicKey.php", { user: username },
+  $.post("getPublicKey.php", { user: current_friend_username },
     function(data, status){
       if(data.startsWith("Error")) {
         displayAlert("#alertMessages","danger","Change symkey failed. " + data);
@@ -103,16 +114,16 @@ function changeSymkey(username, userid) {
         var symkeyforfriend = encaps[1];
         var symkeyforme = AESencryptCBC_arr(plainkey, decryptionkey);
 
-        $.post("initChangeSymkey.php", {username: inputEmail, password: authenticationkey, friend: username, symkeyforme: symkeyforme, symkeyforfriend: symkeyforfriend},
+        $.post("initChangeSymkey.php", {username: inputEmail, password: authenticationkey, friend: current_friend_username, symkeyforme: symkeyforme, symkeyforfriend: symkeyforfriend},
           function(data, status){
             if(data == "1") { //success
               send('I changed secret code. All my previous messages were discarded. Please accept a new generated new secret in "Friend requests" to continue conversation. If you send further messages they can not be read by me.');
               displayAlert("#alertMessages","success","Symmetric key changed successfully!");
-              showMessages(username, userid, symkeyforme)
+              showMessages(current_friend_username, current_friend_id, symkeyforme);
+              generateMenu();
             } else {
               displayAlert("#alertMessages","danger",data);
             }
-            generateMenu();
           }
         );
       }

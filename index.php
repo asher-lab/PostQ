@@ -1,8 +1,6 @@
 <?php
 
-header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: ;
-                                 style-src   'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com ;
-                                 font-src    https://maxcdn.bootstrapcdn.com ; ");
+header("Content-Security-Policy: default-src 'self' ; style-src 'self' https://maxcdn.bootstrapcdn.com ; font-src https://maxcdn.bootstrapcdn.com ; child-src 'self'; object-src 'none' ; form-action 'none' ; frame-ancestors 'none' ;");
 
 ?>
 <!DOCTYPE html>
@@ -52,8 +50,7 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: ;
   <script src="show.js" type="text/javascript"></script>
 
 </head>
-<body onload="pageLoaded()">
-
+<body>
  <div id="signin" class="container">
   <div class="form-signin">
     <h2 class="form-signin-heading">Sign in or register</h2>
@@ -61,18 +58,18 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: ;
     <label for="inputEmail" class="sr-only">Username</label>
     <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus value="">
     <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required value="" onkeyup="if(event.keyCode == 13) signin();">
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required value="" >
     <div class="checkbox">
       <label>
         <input type="checkbox" value="remember-me" id="rememberMe"> Remember me
            <span class="glyphicon glyphicon-question-sign" title="Session data will be kept in your browser local storage. Use only if you trust all users of your computer!"></span>
       </label>
     </div>
-    <button class="btn btn-lg btn-success btn-block" onclick="signin()">Sign in</button>
-    <button class="btn btn-lg btn-warning btn-block" onclick="register()">Register</button>
+    <button class="btn btn-lg btn-success btn-block" id="btn_signin">Sign in</button>
+    <button class="btn btn-lg btn-warning btn-block" id="btn_register">Register</button>
      <div class="progress">
       <div id="scryptprogress" class="progress-bar progress-bar-striped active" role="progressbar"
-      aria-valuenow="0" aria-valuemin="0" aria-valuemax="1" style="width:0%">
+      aria-valuenow="0" aria-valuemin="0" aria-valuemax="1">
       </div>
     </div>
   </div>
@@ -111,7 +108,7 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: ;
         <div id="alertNewFriend"></div>
         <label for="inputFriendEmail" class="sr-only">Friend's username</label>
         <input type="email" id="inputFriendEmail" class="form-control" placeholder="Friend's username" required value="">
-        <button class="btn btn-lg btn-success btn-block" onclick="addFriend()">Add friend</button>
+        <button class="btn btn-lg btn-success btn-block" id="btn_addFriend">Add friend</button>
       </div> <!-- addnewfriend -->
       <div class="container-fluid" id="friendRequests">
         <br>
@@ -122,11 +119,12 @@ header("Content-Security-Policy: default-src 'self' 'unsafe-inline' https: ;
 
       <div class="container-fluid height100" id="messagesouter">
         <div id="alertMessages"></div>
+        <button id="btn_changeSymKey" class="btn btn-lg btn-warning" title="Delete all messages you sent and request a new secret code for conversation">Change secret code</button>
         <div class="pre-scrollable height100" id="messages">
 
         </div>
         <div id="textarea">
-          <textarea class="form-control" id="newmsg" rows="4" onkeydown="if(event.keyCode == 13) return false;" onkeyup="if(event.keyCode == 13) send();"></textarea>
+          <textarea class="form-control" id="newmsg" rows="4"></textarea>
         </div>
 
       </div> <!-- container-fluid -->

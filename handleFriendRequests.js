@@ -25,8 +25,9 @@ function handleFriendRequests() {
       }
       for(var i = 0; i < symkeyrequests.length; i++) {
         $('#symkeyrequestsouter').append('<div> \
-           <a href="javascript:acceptSymkeyRequest(' + i.toString() + ')"> <span class="glyphicon glyphicon-ok" title="Delete all my messages and accept new secret code"></span></a>&nbsp;&nbsp;' +
+           <a href="#" id="acceptSymkeyRequest_' + i.toString()+ '"> <span class="glyphicon glyphicon-ok" title="Delete all my messages and accept new secret code"></span></a>&nbsp;&nbsp;' +
            symkeyrequests[i][2] +  '</div>');
+        document.getElementById('acceptSymkeyRequest_'+i.toString()).addEventListener('click', handleFriendReq_event);
       }
       if(symkeyrequests.length > 0){
         $('#symkeyrequestsouter').append('<hr/>');
@@ -44,11 +45,31 @@ function handleFriendRequests() {
     }
     for(var i = 0; i < requests.length; i++) {
       $('#friendrequestsouter').append('<div> \
-         <a href="javascript:acceptRequest(' + i.toString() + ')"> <span class="glyphicon glyphicon-ok"></span></a>&nbsp;&nbsp; \
-         <a href="javascript:rejectRequest(' + i.toString() + ')"> <span class="glyphicon glyphicon-remove"></span></a> &nbsp;&nbsp;' +
-         requests[i][2] +  '</div>');
+        <a href="#" id="acceptRequest_' + i.toString()+ '"> <span class="glyphicon glyphicon-ok"></span></a>&nbsp;&nbsp; \
+        <a href="#" id="rejectRequest_' + i.toString() + '"> <span class="glyphicon glyphicon-remove"></span></a> &nbsp;&nbsp;' +
+        requests[i][2] +  '</div>');
+      document.getElementById('rejectRequest_'+i.toString()).addEventListener('click', handleFriendReq_event);
+      document.getElementById('acceptRequest_'+i.toString()).addEventListener('click', handleFriendReq_event);
     }
   });
+}
+
+function handleFriendReq_event(event){
+  var item = event.currentTarget.id.split('_');
+  var i = parseInt(item[1]);
+  switch (item[0]) {
+    case "rejectRequest":
+      rejectRequest(i);
+      break;
+    case "acceptRequest":
+      acceptRequest(i);
+      break;
+    case "acceptSymkeyRequest":
+      acceptSymkeyRequest(i);
+      break;
+    default:
+      return false;
+  }
 }
 
 function acceptRequest(requestID) {
@@ -62,7 +83,7 @@ function acceptRequest(requestID) {
   function(data, status){
       if(data == "1") { //success
         displayAlert("#alertFriendRequests","success","Friend added successfully!");
-        generateMenu();
+        generateMenu("menuFriendRequests");
         handleFriendRequests();
       } else {
         displayAlert("#alertFriendRequests","danger",data);
@@ -78,7 +99,7 @@ function rejectRequest(requestID) {
     function(data, status){
       if(data == "1") { //success
         displayAlert("#alertFriendRequests","success","Friend request rejected!");
-        generateMenu();
+        generateMenu("menuFriendRequests");
         handleFriendRequests();
       } else {
         displayAlert("#alertFriendRequests","danger",data);
@@ -98,7 +119,7 @@ function acceptSymkeyRequest(requestID) {
     function(data, status){
       if(data == "1") { //success
         displayAlert("#alertFriendRequests","success","New secret shared!");
-        generateMenu();
+        generateMenu("menuFriendRequests");
         handleFriendRequests();
       } else {
         displayAlert("#alertFriendRequests","danger",data);

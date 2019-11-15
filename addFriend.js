@@ -13,6 +13,7 @@ var friend;
 
 function addFriend() {
   friend = $('#inputFriendEmail').val();
+  $('#inputFriendEmail').val('');
   //get the public key of the given friend
   $.post("getPublicKey.php", { user: friend }, function(data, status){
     if(data.startsWith("Error")) {
@@ -34,10 +35,10 @@ function addFriend() {
         function(data, status){
           if(data == "1") { //success
             displayAlert("#alertNewFriend","success","Friend added successfully!");
+            generateMenu();
           } else {
             displayAlert("#alertNewFriend","danger",data);
           }
-          generateMenu();
         });
     }
   });      

@@ -11,7 +11,7 @@
  * Students’ regulation of Eötvös Loránd University (ELTE Regulations Vol. II. 74/C. § ) states that as long as a student presents another student’s work - or at least the significant part of it - as his/her own performance, it will count as a disciplinary fault. The most serious consequence of a disciplinary fault can be dismissal of the student from the University.
 */
 
-exit 0; //disable installation
+//exit 0; //disable installation
 
 echo "<h1>PostQ Installation script</h1>";
 if(!include("sqlconfig.php")) die("sqlconfig.php could not be found. Please create it!");
