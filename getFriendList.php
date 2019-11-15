@@ -22,7 +22,7 @@ if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === 
   die("Authentication failed");
   
 // prepare, bind and execute
-$stmt = $conn->prepare("SELECT u2.username, symkeys.user2, symkeys.symkey FROM symkeys, users AS u1, users AS u2 WHERE symkeys.user1 = u1.id AND symkeys.user2 = u2.id AND u1.username = ?");
+$stmt = $conn->prepare("SELECT u2.username, symkeys.user2, symkeys.symkey FROM symkeys, users AS u1, users AS u2 WHERE symkeys.user1 = u1.id AND symkeys.user2 = u2.id AND u1.username = ? ORDER BY u2.username ASC");
 $stmt->bind_param("s", $_POST['username']);
 $stmt->execute();
 if ($stmt->errno)
