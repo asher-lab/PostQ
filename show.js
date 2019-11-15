@@ -11,6 +11,7 @@
  */
 
 function showAddNewFriend() {
+  current_friend_id = -1
   clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
   $('#friendRequests').hide();
@@ -22,6 +23,7 @@ function showAddNewFriend() {
 }
 
 function showFriendRequests() {
+  current_friend_id = -1
   clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
   $('#addnewfriend').hide();
@@ -33,7 +35,7 @@ function showFriendRequests() {
   handleFriendRequests();
 }
 
-var current_friend_id;
+var current_friend_id = -1;
 var current_friend_username;
 var msgSymKey;
 var messageUpdateTimer;
@@ -45,9 +47,21 @@ function showMessages(friend_username, friend_id, symkey) {
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
 
   if (current_friend_id != friend_id) {
+    $('#addnewfriend').hide();
+    $('#friendRequests').hide();
     $("#alertMessages").hide();
     current_friend_id = friend_id;
     current_friend_username = friend_username;
+    $('.msgtitle').text(current_friend_username);
+    $('#messages').empty();
+    $('#messages').append("<div>Loading messages...</div>"); //
+    for (var i=0 ; i < friends.length; i++) {
+      if(friends[i][1]==current_friend_id) {
+        markSelected('menuMsgs_'+i.toString());
+        break;
+      }
+    }
+    $('#messagesouter').show();
   }
   msgId = 0;
   var msgIduser2 = 0;
@@ -89,18 +103,8 @@ function showMessages(friend_username, friend_id, symkey) {
       }
     }
 
-    $('#addnewfriend').hide();
-    $('#friendRequests').hide();
-    $('.msgtitle').text(current_friend_username);
-    $('#messagesouter').show();
     $('#messages').scrollTo("max");
     messageUpdateTimer = setTimeout(function(){showMessages(current_friend_username, current_friend_id, symkey);}, messageTimeout*1000);
-    for (var i=0 ; i < friends.length; i++) {
-	  if(friends[i][1]==current_friend_id) {
-        markSelected('menuMsgs_'+i.toString());
-        break;
-      }
-    }
   });
 }
 

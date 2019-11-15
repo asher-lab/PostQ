@@ -15,11 +15,15 @@ var symkeyrequests;
 
 function handleFriendRequests() {
 
+  $('#symkeyrequestsouter').empty(); //clear previous requests
+  $('#friendrequestsouter').empty(); //clear previous requests
+  $('#friendrequestsouter').append('Loading requests...');
+  $('#symkeyrequestsouter').append('Loading changing code requests...');
   //get requests to change symkeys
   $.post("getSymkeyRequests.php", { username: inputEmail, password: authenticationkey } ,
     function(data, status){
       symkeyrequests = $.csv.toArrays(data);
-      $('#symkeyrequestsouter').empty(); //clear previous requests
+      $('#symkeyrequestsouter').empty(); //clear loading warning
       if(symkeyrequests.length > 0){
         $('#symkeyrequestsouter').append('<span class="glyphicon glyphicon-info-sign" title="Accepting new secret code will delete all previous message you sent!"></span>&nbsp;&nbsp;Secret code changing request from:<br/>');
       }
@@ -39,7 +43,7 @@ function handleFriendRequests() {
   $.post("getNewRequests.php", { username: inputEmail, password: authenticationkey } ,
   function(data, status){
     requests = $.csv.toArrays(data);
-    $('#friendrequestsouter').empty(); //clear previous requests
+    $('#friendrequestsouter').empty(); //clear loading warning
     if (requests.length > 0 ){
       $('#friendrequestsouter').append('Friend request from:<br/>');
     }
