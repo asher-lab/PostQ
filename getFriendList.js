@@ -16,6 +16,7 @@ function generateMenu(active_item) {
   //get friends - name,userId,symkey
   $.post("getFriendList.php", {username: inputEmail, password: authenticationkey},
   function(data, status){
+    var new_a, new_li;
     //empty the menu
     $('#menu').empty();
     //add AddFriend button to the top
@@ -25,7 +26,11 @@ function generateMenu(active_item) {
     $('#menuFriendRequests').on('mousedown', showFriendRequests);
     friends = $.csv.toArrays(data);
     for(var i = 0; i < friends.length; i++) {
-      $('#menu').append('<li id="menuMsgs_' + i.toString() + '"><a href="#"><span class="glyphicon glyphicon-user"></span> ' + friends[i][0] + '</a></li>');
+      new_a=$('<a href="#"></a>');
+      new_a.text(friends[i][0]);
+      new_a.prepend('<span class="glyphicon glyphicon-user"></span> ');
+      new_li=$('<li id="menuMsgs_' + i.toString() + '"></li>');
+      $('#menu').append(new_li.append(new_a));
       $('#menuMsgs_' + i.toString()).on('click', menuMsgs_event);
     }
     $('#menu').append('<li id="menuSignout"><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>');

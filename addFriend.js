@@ -28,7 +28,7 @@ function addFriend() {
 
       $.post("addFriend.php", {
         username: inputEmail, 
-        password: decodeURIComponent(authenticationkey),
+        password: authenticationkey,
         friend: friend,
         symkeyforme: symkeyforme, 
         symkeyforfriend: symkeyforfriend

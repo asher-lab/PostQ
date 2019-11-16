@@ -133,7 +133,7 @@ function changeSymkey() {
         $.post("initChangeSymkey.php", {username: inputEmail, password: authenticationkey, friend: current_friend_username, symkeyforme: symkeyforme, symkeyforfriend: symkeyforfriend},
           function(data, status){
             if(data == "1") { //success
-              send('I changed secret code. All my previous messages were discarded. Please accept a new generated new secret in "Friend requests" to continue conversation. If you send further messages they can not be read by me.');
+              send(inputEmail+' changed secret code. All his/her previous messages were discarded. Please accept a new generated new secret in "Friend requests" to continue conversation. If you send further messages they will not be read.');
               setTimeout(function() { displayAlert("#alertMessages","success","Symmetric key changed successfully!"); }, 500);
               setTimeout(function() {   $("#alertMessages").hide();  $("#alertMessages").empty() }, 5000);
               showMessages(current_friend_username, current_friend_id, symkeyforme);
