@@ -31,7 +31,7 @@ function handleFriendRequests() {
         $('#symkeyrequestsouter').append('<div> \
            <a href="#" id="acceptSymkeyRequest_' + i.toString()+ '"> <span class="glyphicon glyphicon-ok" title="Delete all my messages and accept new secret code"></span></a>&nbsp;&nbsp;' +
            symkeyrequests[i][2] +  '</div>');
-        document.getElementById('acceptSymkeyRequest_'+i.toString()).addEventListener('click', handleFriendReq_event);
+        $('#acceptSymkeyRequest_'+i.toString()).on('click', handleFriendReq_event);
       }
       if(symkeyrequests.length > 0){
         $('#symkeyrequestsouter').append('<hr/>');
@@ -52,8 +52,8 @@ function handleFriendRequests() {
         <a href="#" id="acceptRequest_' + i.toString()+ '"> <span class="glyphicon glyphicon-ok"></span></a>&nbsp;&nbsp; \
         <a href="#" id="rejectRequest_' + i.toString() + '"> <span class="glyphicon glyphicon-remove"></span></a> &nbsp;&nbsp;' +
         requests[i][2] +  '</div>');
-      document.getElementById('rejectRequest_'+i.toString()).addEventListener('click', handleFriendReq_event);
-      document.getElementById('acceptRequest_'+i.toString()).addEventListener('click', handleFriendReq_event);
+      $('#rejectRequest_'+i.toString()).on('click', handleFriendReq_event);
+      $('#acceptRequest_'+i.toString()).on('click', handleFriendReq_event);
     }
   });
 }

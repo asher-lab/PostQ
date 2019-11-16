@@ -17,13 +17,13 @@ function pageLoaded() {
   if (localStorage.getItem("local_username") !== null) {
 	  signin_from_localStorage();
   }
-  document.getElementById('btn_signin').addEventListener('click', signin);
-  document.getElementById('btn_register').addEventListener('click', register);
-  document.getElementById('btn_addFriend').addEventListener('click', addFriend);
-  document.getElementById('btn_changeSymKey').addEventListener('click', changeSymkey);
-  document.getElementById('newmsg').addEventListener('keydown'  , process_send_event );
-  document.getElementById('inputPassword').addEventListener('keyup'  , function (event) { if(event.keyCode == 13) signin(); } );
-  document.getElementById('inputFriendEmail').addEventListener('keyup'  , function (event) { if(event.keyCode == 13) addFriend(); } );
+  $('#btn_signin').on( "click", signin);
+  $('#btn_register').on('click', register);
+  $('#btn_addFriend').on('click', addFriend);
+  $('#newmsg').on('keydown'  , process_send_event );
+  $('#inputPassword').on('keyup'  , function (event) { if(event.keyCode == 13) signin(); } );
+  $('#inputFriendEmail').on('keyup'  , function (event) { if(event.keyCode == 13) addFriend(); } );
+  showAddNewFriend();
 }
 
 function send(text) {

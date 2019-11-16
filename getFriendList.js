@@ -20,16 +20,16 @@ function generateMenu(active_item) {
     $('#menu').empty();
     //add AddFriend button to the top
     $('#menu').append('<li id="menuAddnewfriend"><a href="#"><span class="glyphicon glyphicon-plus"></span> New friend</a></li>');
-    document.getElementById('menuAddnewfriend').addEventListener('click', showAddNewFriend);
+    $('#menuAddnewfriend').on('click', showAddNewFriend);
     $('#menu').append('<li id="menuFriendRequests"><a href="#"><span class="glyphicon glyphicon-edit"></span> Friend requests</a></li>');
-    document.getElementById('menuFriendRequests').addEventListener('mousedown', showFriendRequests);
+    $('#menuFriendRequests').on('mousedown', showFriendRequests);
     friends = $.csv.toArrays(data);
     for(var i = 0; i < friends.length; i++) {
-      $('#menu').append('<li id="menuMsgs_' + i.toString() + '" myfunction="1"><a href="#"><span class="glyphicon glyphicon-user"></span> ' + friends[i][0] + '</a></li>');
-      document.getElementById('menuMsgs_' + i.toString() ).addEventListener('click', menuMsgs_event);
+      $('#menu').append('<li id="menuMsgs_' + i.toString() + '"><a href="#"><span class="glyphicon glyphicon-user"></span> ' + friends[i][0] + '</a></li>');
+      $('#menuMsgs_' + i.toString()).on('click', menuMsgs_event);
     }
     $('#menu').append('<li id="menuSignout"><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>');
-    document.getElementById('menuSignout').addEventListener('click', signout);
+    $('#menuSignout').on('click', signout);
     if(active_item === undefined)
       $("#menuAddnewfriend").addClass("active");
     else

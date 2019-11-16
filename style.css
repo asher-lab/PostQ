@@ -30,6 +30,10 @@ body {
   height: calc(100% - 32px);
 }
 
+#a_symkey, #a_symkey2 {
+  margin-left: 50px;
+}
+
 .form-signin {
   max-width: 330px;
   padding: 15px;
@@ -81,7 +85,7 @@ body {
 
 @media (min-width: 768px) {
   #messageouterouter {
-    height: 99%;
+    height: calc(100% - 230px);
   }
 }
 
@@ -112,6 +116,11 @@ body {
 
 .width100 {
   width: 100%;
+}
+
+#messages {
+  height: 100%;
+  overflow-y: auto;
 }
 
 #messagesouter {

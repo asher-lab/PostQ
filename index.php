@@ -102,7 +102,7 @@ header("Content-Security-Policy: default-src 'self' ; style-src 'self' https://m
       </div>
     </div>
     <div class="col-sm-9" id="messageouterouter">
-      <h2 class="msgtitle" id="messagetitle">Add new friend</h2>
+      <div class="msgtitle width100" id="messagetitle"></div>
       <div class="container-fluid" id="addnewfriend">
         <br>
         <div id="alertNewFriend"></div>
@@ -119,8 +119,7 @@ header("Content-Security-Policy: default-src 'self' ; style-src 'self' https://m
 
       <div class="container-fluid height100" id="messagesouter">
         <div id="alertMessages"></div>
-        <button id="btn_changeSymKey" class="btn btn-lg btn-warning" title="Delete all messages you sent and request a new secret code for conversation">Change secret code</button>
-        <div class="pre-scrollable height100" id="messages">
+        <div id="messages">
 
         </div>
         <div id="textarea">

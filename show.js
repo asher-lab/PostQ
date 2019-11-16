@@ -17,7 +17,8 @@ function showAddNewFriend() {
   $('#friendRequests').hide();
   $("#alertMessages").hide();
   $('#alertNewFriend').empty();
-  $('.msgtitle').text('Add new friend');
+  $('#messagetitle').html('<h2>Add new friend</h2>');
+  $('#menubrand').html('Add new friend');
   $('#addnewfriend').show();
   markSelected("menuAddnewfriend");
 }
@@ -28,7 +29,8 @@ function showFriendRequests() {
   $('#messagesouter').hide();
   $('#addnewfriend').hide();
   $("#alertMessages").hide();
-  $('.msgtitle').text('Manage friend requests');
+  $('#messagetitle').html('<h2>Manage friend requests</h2>');
+  $('#menubrand').html('Friend requests');
   $('#alertFriendRequests').empty();
   $('#friendRequests').show();
   markSelected("menuFriendRequests");
@@ -52,7 +54,14 @@ function showMessages(friend_username, friend_id, symkey) {
     $("#alertMessages").hide();
     current_friend_id = friend_id;
     current_friend_username = friend_username;
-    $('.msgtitle').text(current_friend_username);
+    var newdiv=$('<h2></h2>');
+    newdiv.text(current_friend_username);
+    newdiv.append('<a href="#" id="a_symkey"><span class="glyphicon glyphicon-flash" title="Delete all messages you sent and request a new secret code for conversation"></span></a>');
+    $('#messagetitle').html(newdiv);
+    $('#menubrand').text(current_friend_username);
+    $('#menubrand').append('<a href="#" id="a_symkey2"><span class="glyphicon glyphicon-flash" title="Delete all messages you sent and request a new secret code for conversation"></span></a>');
+    $('#a_symkey').on('click', changeSymkey);
+    $('#a_symkey2').on('click', changeSymkey);
     $('#messages').empty();
     $('#messages').append("<div>Loading messages...</div>"); //
     for (var i=0 ; i < friends.length; i++) {
@@ -125,7 +134,8 @@ function changeSymkey() {
           function(data, status){
             if(data == "1") { //success
               send('I changed secret code. All my previous messages were discarded. Please accept a new generated new secret in "Friend requests" to continue conversation. If you send further messages they can not be read by me.');
-              displayAlert("#alertMessages","success","Symmetric key changed successfully!");
+              setTimeout(function() { displayAlert("#alertMessages","success","Symmetric key changed successfully!"); }, 500);
+              setTimeout(function() {   $("#alertMessages").hide();  $("#alertMessages").empty() }, 5000);
               showMessages(current_friend_username, current_friend_id, symkeyforme);
               generateMenu();
             } else {
