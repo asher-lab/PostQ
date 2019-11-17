@@ -77,10 +77,10 @@ header("Content-Security-Policy: default-src 'self' ; style-src 'self' https://m
 
 
  <div id="main">
-  <div class="row height100">
-    <div class="col-sm-3">
-      <div class="container-fluid">
-        <nav class="navbar navbar-default navbar-absolute" role="navigation">
+  <div class="height100">
+    <div class="col-sm-3" id="nav_1">
+      <div class="" id="nav_11">
+        <nav class="navbar navbar-default navbar-absolute" role="navigation" id="nav_111">
           <div class="container-fluid" id="menuheader">
             <div class="navbar-header width100">
               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">

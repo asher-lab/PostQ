@@ -79,13 +79,19 @@ body {
 
 #main {
   display:none;
-  width: 95%;
   height: calc(100% - 32px);
 }
 
 @media (min-width: 768px) {
   #messageouterouter {
     height: calc(100% - 230px);
+  }
+  #nav_1, #nav_11, #nav_111 {
+    height: 100%;
+  }
+  #menuheader {
+    height: 100%;
+    overflow-y: auto;
   }
 }
 
@@ -192,6 +198,7 @@ li {
   margin: 10px;
   border-radius: 10px;
   white-space: pre-wrap;
+  line-height: 1.2;
 }
 
 textarea {
