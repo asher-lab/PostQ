@@ -28,6 +28,9 @@ if(!$_POST['username'] || !$_POST['password'] || !$_POST['privatekey'] || !$_POS
 if(userExists($conn, $_POST['username']))
   die("Error - user already exists. Try to login instead.");
 
+if(strpos($_POST['username'], "\\\"") !== false)
+  die("Error - character \\\" not permitted in username.");
+
 if($use_mail_registration) {
   //Check if username is valid email address
   if(!filter_var($_POST['username'], FILTER_VALIDATE_EMAIL)){

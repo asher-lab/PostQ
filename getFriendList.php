@@ -29,8 +29,11 @@ if ($stmt->errno)
   die("Error during the execution of the SQL query");
 
 //get the result
-$stmt->bind_result($username, $userId, $symkey);
+$stmt->bind_result($row[0], $row[1], $row[2]); //$username, $userId, $symkey
 
-while($stmt->fetch())
-  echo $username . "," . $userId . "," . $symkey . "\n";
+$f = fopen('php://output', 'w');
+while($stmt->fetch()) {
+  fputcsv($f, $row, ',', '"'); //$username, $userId, $symkey
+}
+
 ?>
