@@ -22,8 +22,10 @@ if($stmt->errno)
   die("Error during the execution of the SQL query");
 
 //get the result
-$stmt->bind_result($useridTO, $useridFROM, $usernameFROM, $symkey);
+$stmt->bind_result($row[0], $row[1], $row[2], $row[3]); //$useridTO, $useridFROM, $usernameFROM, $symkey
 
-while($stmt->fetch())
-  echo $useridTO . "," . $useridFROM . "," . $usernameFROM . "," . $symkey . "\n"; //Problem if usernames allow comma!!! Add verification!
+$f = fopen('php://output', 'w');
+while($stmt->fetch()) {
+  fputcsv($f, $row, ',', '"'); //$useridTO, $useridFROM, $usernameFROM, $symkey
+}
 ?>

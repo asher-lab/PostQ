@@ -9,36 +9,57 @@
  * Given the uniqueness of the project (no other student had, have or will have the same project) we have published our code on GitHub with the permission of our professors.
  * Students’ regulation of Eötvös Loránd University (ELTE Regulations Vol. II. 74/C. § ) states that as long as a student presents another student’s work - or at least the significant part of it - as his/her own performance, it will count as a disciplinary fault. The most serious consequence of a disciplinary fault can be dismissal of the student from the University.
  */
- 
-function pageLoaded() {
-  if($('#messages').length) $('#messages').scrollTo("max"); //if messages, scroll to bottom
 
+$(window).load(pageLoaded);
+
+function pageLoaded() {
   //Check for localStorage and login user
   if (localStorage.getItem("local_username") !== null) {
 	  signin_from_localStorage();
   }
+  $('#btn_signin').on( "click", signin);
+  $('#btn_register').on('click', register);
+  $('#btn_addFriend').on('click', addFriend);
+  $('#newmsg').on('keydown'  , process_send_event );
+  $('#inputPassword').on('keyup'  , function (event) { if(event.keyCode == 13) signin(); } );
+  $('#inputFriendEmail').on('keyup'  , function (event) { if(event.keyCode == 13) addFriend(); } );
+  showAddNewFriend();
 }
 
 function send(text) {
   msgId++;
   var msg = $('#newmsg').val();
+  $('#newmsg').val(''); //cleare the message box
   if(typeof text === 'string')
     msg=text;
-
+  msg = msg.trim(); //remove trailing new line
+  if(msg=="")
+    return;
   var msgWithId = msgId.toString() + ";" + msg;
-  $('#newmsg').val(''); //cleare the message box
-  
   var nonce = secureRandom(8);
   var encMsg = AESencryptCTR(msgWithId,msgSymKey,nonce);
   var hexNonce = ByteArray_2_HexString(nonce);
-  $.post("sendMsg.php", { username: inputEmail, password: authenticationkey,  user2Id: user2Id, msg: encMsg, nonce: hexNonce}, 
+  $.post("sendMsg.php", { username: inputEmail, password: authenticationkey,  user2Id: current_friend_id, msg: encMsg, nonce: hexNonce},
   function(data, status){
     if(data == 1) { //if success, display message
       $("#alertMessages").hide(); //hide the alert
-      $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
+      var new_div = $('<div class="msgFromMe_noRefresh"></div>');
+      new_div.text(msg);
+      $('#messages').append(new_div);
       $('#messages').scrollTo("max",500);
     } else {
       displayAlert("#alertMessages","danger","Sending message failed. " + data);
     }
   });
+}
+
+function process_send_event(event) {
+  if(event.keyCode == 13) {
+    if(event.ctrlKey == false){
+      send();
+      event.preventDefault();
+    }
+    else
+      $('#newmsg').val($('#newmsg').val()+"\n");
+  }
 }

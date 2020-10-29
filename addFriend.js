@@ -13,6 +13,8 @@ var friend;
 
 function addFriend() {
   friend = $('#inputFriendEmail').val();
+  $('#inputFriendEmail').val('');
+  displayAlert("#alertNewFriend","info","Sending request to server...");
   //get the public key of the given friend
   $.post("getPublicKey.php", { user: friend }, function(data, status){
     if(data.startsWith("Error")) {
@@ -26,7 +28,7 @@ function addFriend() {
 
       $.post("addFriend.php", {
         username: inputEmail, 
-        password: decodeURIComponent(authenticationkey),
+        password: authenticationkey,
         friend: friend,
         symkeyforme: symkeyforme, 
         symkeyforfriend: symkeyforfriend
@@ -34,10 +36,10 @@ function addFriend() {
         function(data, status){
           if(data == "1") { //success
             displayAlert("#alertNewFriend","success","Friend added successfully!");
+            generateMenu();
           } else {
             displayAlert("#alertNewFriend","danger",data);
           }
-          generateMenu();
         });
     }
   });      

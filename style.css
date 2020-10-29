@@ -15,7 +15,7 @@ html {
 }
 
 body {
-  font: 18px "Ubuntu", sans-serif;
+  font: 18px sans-serif;
   line-height: 1.8;
   background: #FAFFFD;
   color: #342E37;
@@ -28,6 +28,10 @@ body {
   padding-bottom: 40px;
   background-color: #eee;
   height: calc(100% - 32px);
+}
+
+#a_symkey, #a_symkey2 {
+  margin-left: 50px;
 }
 
 .form-signin {
@@ -75,13 +79,19 @@ body {
 
 #main {
   display:none;
-  width: 95%;
   height: calc(100% - 32px);
 }
 
 @media (min-width: 768px) {
   #messageouterouter {
-    height: 99%;
+    height: calc(100% - 230px);
+  }
+  #nav_1, #nav_11, #nav_111 {
+    height: 100%;
+  }
+  #menuheader {
+    height: 100%;
+    overflow-y: auto;
   }
 }
 
@@ -112,6 +122,11 @@ body {
 
 .width100 {
   width: 100%;
+}
+
+#messages {
+  height: 100%;
+  overflow-y: auto;
 }
 
 #messagesouter {
@@ -167,15 +182,23 @@ li {
   background-color: #9FD356;
 }
 
+.msgFromMe_noRefresh {
+  margin-left: 10% !important;
+  color: #909090;
+  background-color: #9FD356;
+}
+
 .msgToMe {
   margin-right: 10% !important;
   background-color: #c0c6bc;
 }
 
-.msgFromMe, .msgToMe {
+.msgFromMe, .msgToMe, .msgFromMe_noRefresh {
   padding: 5px;
   margin: 10px;
   border-radius: 10px;
+  white-space: pre-wrap;
+  line-height: 1.2;
 }
 
 textarea {
@@ -190,51 +213,3 @@ footer {background-color: #FA824C !important;}
 footer a:hover {color: #286B50;}
 3C91E6*/
 
-/*
- *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree.
- */
-button {
-  margin: 0 20px 0 0;
-  width: 83px;
-}
-
-button#hangupButton {
-    margin: 0;
-}
-
-video {
-  --width: 45%;
-  width: var(--width);
-  height: calc(var(--width) * 0.75);
-  margin: 0 0 20px 0;
-  vertical-align: top;
-}
-
-video#localVideo {
-  margin: 0 20px 20px 0;
-}
-
-div.box {
-  margin: 1em;
-}
-
-@media screen and (max-width: 400px) {
-  button {
-    width: 83px;
-    margin: 0 11px 10px 0;
-  }
-
-  video {
-    height: 90px;
-    margin: 0 0 0 0;
-    width: calc(50% - 7px);
-  }
-  video#localVideo {
-    margin: 0 0 0 0;
-  }
-
-}

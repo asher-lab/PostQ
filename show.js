@@ -11,50 +11,79 @@
  */
 
 function showAddNewFriend() {
+  current_friend_id = -1
   clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
   $('#friendRequests').hide();
+  $("#alertMessages").hide();
   $('#alertNewFriend').empty();
-  $('.msgtitle').text('Add new friend');
+  $('#messagetitle').html('<h2>Add new friend</h2>');
+  $('#menubrand').html('Add new friend');
   $('#addnewfriend').show();
   markSelected("menuAddnewfriend");
 }
 
 function showFriendRequests() {
+  current_friend_id = -1
   clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
   $('#addnewfriend').hide();
-  $('.msgtitle').text('Manage friend requests');
+  $("#alertMessages").hide();
+  $('#messagetitle').html('<h2>Manage friend requests</h2>');
+  $('#menubrand').html('Friend requests');
   $('#alertFriendRequests').empty();
   $('#friendRequests').show();
   markSelected("menuFriendRequests");
-  handleFriendRequests()
+  handleFriendRequests();
 }
 
-var user2Id;
+var current_friend_id = -1;
+var current_friend_username;
 var msgSymKey;
 var messageUpdateTimer;
 var messageTimeout = 5; //in second
 var msgId;
-var msgIduser2;
 const warnSymkeyExchangeEvery = 20 //messages
 
-function showMessages(username, userid, symkey) {
+function showMessages(friend_username, friend_id, symkey) {
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
 
-  user2Id = userid;
+  if (current_friend_id != friend_id) {
+    $('#addnewfriend').hide();
+    $('#friendRequests').hide();
+    $("#alertMessages").hide();
+    current_friend_id = friend_id;
+    current_friend_username = friend_username;
+    var newdiv=$('<h2></h2>');
+    newdiv.text(current_friend_username);
+    newdiv.append('<a href="#" id="a_symkey"><span class="glyphicon glyphicon-flash" title="Delete all messages you sent and request a new secret code for conversation"></span></a>');
+    $('#messagetitle').html(newdiv);
+    $('#menubrand').text(current_friend_username);
+    $('#menubrand').append('<a href="#" id="a_symkey2"><span class="glyphicon glyphicon-flash" title="Delete all messages you sent and request a new secret code for conversation"></span></a>');
+    $('#a_symkey').on('click', changeSymkey);
+    $('#a_symkey2').on('click', changeSymkey);
+    $('#messages').empty();
+    $('#messages').append("<div>Loading messages...</div>"); //
+    for (var i=0 ; i < friends.length; i++) {
+      if(friends[i][1]==current_friend_id) {
+        markSelected('menuMsgs_'+i.toString());
+        break;
+      }
+    }
+    $('#messagesouter').show();
+  }
   msgId = 0;
-  msgIduser2 = 0;
+  var msgIduser2 = 0;
 
   //decrypt symmetric key
   msgSymKey = AESdecryptCBC_arr(symkey, decryptionkey);
  
-  $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: user2Id },
+  $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: current_friend_id },
 
   function(data, status){
+    var newdiv;
     $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");
-    var signalingMsgs = []
     for(var i=0; i<messages.length; i++) {
       if(messages[i] != "") {
         var fromTo = messages[i].substring(0,1);
@@ -63,54 +92,34 @@ function showMessages(username, userid, symkey) {
         var decIdAndMsg = AESdecryptCTR(idAndMsg, msgSymKey, msgNonce);
         if(decIdAndMsg.indexOf(";") == -1) //error decoding or outdated symkey
           continue;
-        var decIdAndMsgA = decIdAndMsg.split(";");
-        var msg = decIdAndMsgA[1];
-        var msgIdi = parseInt(decIdAndMsgA[0]);
-        if(msgIdi == 00 && decIdAndMsgA[0].length != 1) //error decoding or outdated symkey
+        var msgIdi = parseInt(decIdAndMsg.substring(0, decIdAndMsg.indexOf(";")));
+        var msg = decIdAndMsg.substring(decIdAndMsg.indexOf(";")+1);
+        if(msgIdi == 00 && decIdAndMsg.indexOf(";") != 1) //error decoding or outdated symkey
           continue;
         if(fromTo == '1' && msgIdi > msgId) {
           msgId = msgIdi;
-          $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
+          newdiv = $('<div class="msgFromMe"></div>');
+          newdiv.text(msg);
+          $('#messages').append(newdiv);
         } else if(fromTo == '0' && msgIdi > msgIduser2){
           msgIduser2 = msgIdi;
-          $('#messages').append('<div class="msgToMe">' + msg + '</div>');
-        } //handling calls
-        else if(fromTo == '0' && msgIdi == 0){
-          timestamp=parseInt(decIdAndMsg.split("&")[2])
-          if(timestamp+10000>Date.now()){
-          msg=decIdAndMsg.split("&")[1]
-          signalingMsgs.push(msg)
-          }
-
+          newdiv = $('<div class="msgToMe"></div>');
+          newdiv.text(msg);
+          $('#messages').append(newdiv);
         }
         if(i != 0 && i % warnSymkeyExchangeEvery == 0)
           $('#messages').append('<div>Reminder: Consider to change secret code.</div>');
       }
     }
-    //if call params were recieved
-    if (signalingMsgs.length > 2)
-    {
-      if (!initiator){
-      onOfferRecieved(signalingMsgs)
-    } else {
-      onAnswerRecived(signalingMsgs)
-    }
 
-    }
-
-    $('#addnewfriend').hide();
-    $('#friendRequests').hide();
-    $('.msgtitle').html(username + ' <a href="javascript:changeSymkey(\'' + username + '\', ' + userid + ')"><span class="glyphicon glyphicon-flash" title="Delete all my messages and enforce new secret code"></span></a>');
-    $('#messagesouter').show();
     $('#messages').scrollTo("max");
-    markSelected("menuMsgs"+userid);
-    messageUpdateTimer = setTimeout(function(){showMessages(username, userid, symkey);}, messageTimeout*1000);
+    messageUpdateTimer = setTimeout(function(){showMessages(current_friend_username, current_friend_id, symkey);}, messageTimeout*1000);
   });
 }
 
-function changeSymkey(username, userid) {
+function changeSymkey() {
 
-  $.post("getPublicKey.php", { user: username },
+  $.post("getPublicKey.php", { user: current_friend_username },
     function(data, status){
       if(data.startsWith("Error")) {
         displayAlert("#alertMessages","danger","Change symkey failed. " + data);
@@ -121,16 +130,17 @@ function changeSymkey(username, userid) {
         var symkeyforfriend = encaps[1];
         var symkeyforme = AESencryptCBC_arr(plainkey, decryptionkey);
 
-        $.post("initChangeSymkey.php", {username: inputEmail, password: authenticationkey, friend: username, symkeyforme: symkeyforme, symkeyforfriend: symkeyforfriend},
+        $.post("initChangeSymkey.php", {username: inputEmail, password: authenticationkey, friend: current_friend_username, symkeyforme: symkeyforme, symkeyforfriend: symkeyforfriend},
           function(data, status){
             if(data == "1") { //success
-              send('I changed secret code. All my previous messages were discarded. Please accept a new generated new secret in "Friend requests" to continue conversation. If you send further messages they can not be read by me.');
-              displayAlert("#alertMessages","success","Symmetric key changed successfully!");
-              showMessages(username, userid, symkeyforme)
+              send(inputEmail+' changed secret code. All his/her previous messages were discarded. Please accept a new generated new secret in "Friend requests" to continue conversation. If you send further messages they will not be read.');
+              setTimeout(function() { displayAlert("#alertMessages","success","Symmetric key changed successfully!"); }, 500);
+              setTimeout(function() {   $("#alertMessages").hide();  $("#alertMessages").empty() }, 5000);
+              showMessages(current_friend_username, current_friend_id, symkeyforme);
+              generateMenu();
             } else {
               displayAlert("#alertMessages","danger",data);
             }
-            generateMenu();
           }
         );
       }

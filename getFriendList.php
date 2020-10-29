@@ -22,15 +22,18 @@ if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === 
   die("Authentication failed");
   
 // prepare, bind and execute
-$stmt = $conn->prepare("SELECT u2.username, symkeys.user2, symkeys.symkey FROM symkeys, users AS u1, users AS u2 WHERE symkeys.user1 = u1.id AND symkeys.user2 = u2.id AND u1.username = ?");
+$stmt = $conn->prepare("SELECT u2.username, symkeys.user2, symkeys.symkey FROM symkeys, users AS u1, users AS u2 WHERE symkeys.user1 = u1.id AND symkeys.user2 = u2.id AND u1.username = ? ORDER BY u2.username ASC");
 $stmt->bind_param("s", $_POST['username']);
 $stmt->execute();
 if ($stmt->errno)
   die("Error during the execution of the SQL query");
 
 //get the result
-$stmt->bind_result($username, $userId, $symkey);
+$stmt->bind_result($row[0], $row[1], $row[2]); //$username, $userId, $symkey
 
-while($stmt->fetch())
-  echo $username . "," . $userId . "," . $symkey . "\n";
+$f = fopen('php://output', 'w');
+while($stmt->fetch()) {
+  fputcsv($f, $row, ',', '"'); //$username, $userId, $symkey
+}
+
 ?>

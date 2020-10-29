@@ -12,19 +12,38 @@
 
 var friends;
 
-function generateMenu() {
+function generateMenu(active_item) {
   //get friends - name,userId,symkey
   $.post("getFriendList.php", {username: inputEmail, password: authenticationkey},
   function(data, status){
+    var new_a, new_li;
     //empty the menu
     $('#menu').empty();
     //add AddFriend button to the top
-    $('#menu').append('<li id="menuAddnewfriend" class="active"><a href="javascript:showAddNewFriend()"><span class="glyphicon glyphicon-plus"></span> New friend</a></li>');
-    $('#menu').append('<li id="menuFriendRequests"><a href="javascript:showFriendRequests()"><span class="glyphicon glyphicon-edit"></span> Friend requests</a></li>');
+    $('#menu').append('<li id="menuAddnewfriend"><a href="#"><span class="glyphicon glyphicon-plus"></span> New friend</a></li>');
+    $('#menuAddnewfriend').on('click', showAddNewFriend);
+    $('#menu').append('<li id="menuFriendRequests"><a href="#"><span class="glyphicon glyphicon-edit"></span> Friend requests</a></li>');
+    $('#menuFriendRequests').on('mousedown', showFriendRequests);
     friends = $.csv.toArrays(data);
     for(var i = 0; i < friends.length; i++) {
-      $('#menu').append('<li id="menuMsgs' + friends[i][1] + '"><a href="javascript:showMessages(\'' + friends[i][0] + '\',\'' + friends[i][1] + '\',\'' + friends[i][2] + '\')"><span class="glyphicon glyphicon-user"></span> ' + friends[i][0] + '</a></li>');
+      new_a=$('<a href="#"></a>');
+      new_a.text(friends[i][0]);
+      new_a.prepend('<span class="glyphicon glyphicon-user"></span> ');
+      new_li=$('<li id="menuMsgs_' + i.toString() + '"></li>');
+      $('#menu').append(new_li.append(new_a));
+      $('#menuMsgs_' + i.toString()).on('click', menuMsgs_event);
     }
-    $('#menu').append('<li><a href="javascript:signout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>');
+    $('#menu').append('<li id="menuSignout"><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>');
+    $('#menuSignout').on('click', signout);
+    if(active_item === undefined)
+      $("#menuAddnewfriend").addClass("active");
+    else
+      $("#"+active_item).addClass("active");
   });
+}
+
+function menuMsgs_event(event){
+  var item = event.currentTarget.id.split('_');
+  var i = parseInt(item[1]);
+  showMessages(friends[i][0],friends[i][1], friends[i][2] );
 }

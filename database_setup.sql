@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `postq`
 --
-CREATE DATABASE IF NOT EXISTS `postq` DEFAULT CHARACTER SET latin2 COLLATE latin2_hungarian_ci;
+CREATE DATABASE IF NOT EXISTS `postq` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `postq`;
 
 -- --------------------------------------------------------
@@ -45,10 +45,10 @@ CREATE TABLE `friendrequests` (
   `id` int(11) NOT NULL,
   `useridTO` int(11) NOT NULL,
   `useridFROM` int(11) NOT NULL,
-  `usernameFROM` varchar(80) COLLATE latin2_hungarian_ci NOT NULL,
+  `usernameFROM` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
   `rejected` bit NOT NULL DEFAULT 0,
-  `symkey` text COLLATE latin2_hungarian_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+  `symkey` text COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -61,10 +61,10 @@ CREATE TABLE `messages` (
   `id` int(11) NOT NULL,
   `user1` int(11) NOT NULL,
   `user2` int(11) NOT NULL,
-  `messages` text COLLATE latin2_hungarian_ci NOT NULL,
+  `messages` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `nonce` binary(16) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 --
@@ -76,9 +76,9 @@ CREATE TABLE `symkeyrequests` (
   `id` int(11) NOT NULL,
   `useridTO` int(11) NOT NULL,
   `useridFROM` int(11) NOT NULL,
-  `usernameFROM` varchar(80) COLLATE latin2_hungarian_ci NOT NULL,
-  `symkey` text COLLATE latin2_hungarian_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+  `usernameFROM` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `symkey` text COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -91,8 +91,8 @@ CREATE TABLE `symkeys` (
   `id` int(11) NOT NULL,
   `user1` int(11) NOT NULL,
   `user2` int(11) NOT NULL,
-  `symkey` text COLLATE latin2_hungarian_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+  `symkey` text COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -103,11 +103,11 @@ CREATE TABLE `symkeys` (
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` text COLLATE latin2_hungarian_ci NOT NULL,
-  `password` varchar(65) COLLATE latin2_hungarian_ci NOT NULL,
-  `privatekey` text COLLATE latin2_hungarian_ci NOT NULL,
-  `publickey` text COLLATE latin2_hungarian_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+  `username` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(65) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `privatekey` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `publickey` text COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `unverified_users`
@@ -115,13 +115,13 @@ CREATE TABLE `users` (
 
 DROP TABLE IF EXISTS `unverified_users`;
 CREATE TABLE `unverified_users` (
-  `username` varchar(80) COLLATE latin2_hungarian_ci NOT NULL,
-  `password` varchar(65) COLLATE latin2_hungarian_ci NOT NULL,
-  `privatekey` text COLLATE latin2_hungarian_ci NOT NULL,
-  `publickey` text COLLATE latin2_hungarian_ci NOT NULL,
-  `registrationcode` varchar(65) COLLATE latin2_hungarian_ci NOT NULL,
+  `username` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(65) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `privatekey` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `publickey` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `registrationcode` varchar(65) COLLATE utf8mb4_unicode_ci NOT NULL,
   `expires` timestamp NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Indexes for table `friendrequests`

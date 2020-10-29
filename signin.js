@@ -82,6 +82,7 @@ function signin() {
       $.post("login.php", {	username: inputEmail,	password: authenticationkey },
 
         function(data, status){
+          updateInterface(1);
           if(data.substring(0,1) == '1') { //successfull login
             $('#signin').hide();
             $('#main').show();
@@ -98,7 +99,7 @@ function signin() {
           }
       });
     } else {
-      updateInterface(progress);
+      updateInterface(progress*0.9); //last 10% to login.php response
     }
   });
 }
