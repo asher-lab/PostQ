@@ -26,14 +26,23 @@ if($stmt->errno)
 
 if($conn->affected_rows !== 1)
   die("Error - not existing symkey request");
+$stmt->close();
 
-//delete older messages
+//delete older messages from user to friend (old symkey)
 $stmt = $conn->prepare("DELETE FROM messages WHERE user1 = ? AND user2 = ?");
-$stmt->bind_param("ii", $userId, $friendId);
+$stmt->bind_param("ii", $userId, $_POST['friendId']);
 $stmt->execute();
 if($stmt->errno)
   die("Error during the execution of the SQL query - 2");
+$stmt->close();
 
+//delete oldest message (the one requesting new symkey acceptance) from friend to user
+$stmt = $conn->prepare("DELETE FROM messages WHERE user1 = ? AND user2 = ? LIMIT 1 ");
+$stmt->bind_param("ii", $_POST['friendId'], $userId);
+$stmt->execute();
+if($stmt->errno)
+  die("Error during the execution of the SQL query - 2");
+$stmt->close();
 
 //add my new symkey
 $stmt = $conn->prepare("UPDATE symkeys SET symkey = ? WHERE  user1 = ? AND user2  = ?");

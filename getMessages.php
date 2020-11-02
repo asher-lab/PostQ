@@ -26,6 +26,9 @@ if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === 
   die("Authentication failed");
   
 $userId = getUserId($conn, $_POST['username']);
+if (!is_numeric($userId))
+  die($userId);
+
 // prepare, bind and execute
 $stmt = $conn->prepare("SELECT messages, user1, nonce FROM messages WHERE (messages.user1 = ? AND  messages.user2 = ?) OR (messages.user2 = ? AND  messages.user1 = ?) ORDER BY time ASC");
 $stmt->bind_param("iiii", $userId, $_POST['user2Id'], $userId, $_POST['user2Id']);
@@ -42,4 +45,11 @@ while($stmt->fetch()) {
   else
     echo "0" . $nonce . ";" . $message . "\n";;
   }
+$stmt->close();
+
+$stmt = $conn->prepare("UPDATE messages SET new_msg = 0 WHERE messages.user1 = ? AND  messages.user2 = ?");
+$stmt->bind_param("ii", $_POST['user2Id'], $userId);
+$stmt->execute();
+if ($stmt->errno)
+  die("Error during the execution of the SQL query");
 ?>

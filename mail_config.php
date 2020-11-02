@@ -1,6 +1,6 @@
 <?php
 
-$use_mail_registration = true; //remeber to configure mail() function in php if you change to true!!!
+$use_mail_registration = false; //remeber to configure mail() function in php if you change to true!!!
 $expiration_time = 2*60*60; //time in seconds
 
 $mail_subject = 'Verification code'; // Give the email a subject 

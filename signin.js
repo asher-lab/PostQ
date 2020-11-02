@@ -46,7 +46,7 @@ function signin_from_localStorage(){
         $('#signin').hide();
         $('#main').show();
         privatekey = AESdecryptCBC_txt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
-        generateMenu();
+        generateMenu("menuAddnewfriend");
       } else {
         displayLoginAlert("danger",data);
         //clear localStorage variables because authentication error
@@ -88,7 +88,7 @@ function signin() {
             $('#main').show();
             privatekey = AESdecryptCBC_txt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
 
-            generateMenu();
+            generateMenu("menuAddnewfriend");
             if ($('#rememberMe').is(":checked")) { //Option to remeber user saving keys
               localStorage.setItem('local_username',inputEmail);
               localStorage.setItem('local_decryption_key', btoa(String.fromCharCode.apply(null,decryptionkey)));
