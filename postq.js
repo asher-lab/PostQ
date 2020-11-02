@@ -23,6 +23,10 @@ function pageLoaded() {
   $('#newmsg').on('keydown'  , process_send_event );
   $('#inputPassword').on('keyup'  , function (event) { if(event.keyCode == 13) signin(); } );
   $('#inputFriendEmail').on('keyup'  , function (event) { if(event.keyCode == 13) addFriend(); } );
+  document.addEventListener("visibilitychange", onVisibilityChanged, false);
+  document.addEventListener("mozvisibilitychange", onVisibilityChanged, false);
+  document.addEventListener("webkitvisibilitychange", onVisibilityChanged, false);
+  document.addEventListener("msvisibilitychange", onVisibilityChanged, false);
   showAddNewFriend();
 }
 
@@ -61,5 +65,19 @@ function process_send_event(event) {
     }
     else
       $('#newmsg').val($('#newmsg').val()+"\n");
+  }
+}
+
+// Stop messageTimer, so number of unread messages will increase when page is not visible.
+// User will be warned, because the menuTimer will still be active
+function onVisibilityChanged() {
+  if (document.hidden || document.mozHidden || document.webkitHidden || document.msHidden) {
+    // The tab has lost focus
+    if (current_friend_id != -1 )
+      clearTimeout(messageUpdateTimer);
+  } else {
+    // The tab has gained focus
+    if (current_friend_id != -1 )
+      messageUpdateTimer = setTimeout(function(){showMessages(current_friend_username, current_friend_id);}, 100);
   }
 }

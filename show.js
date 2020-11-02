@@ -42,8 +42,13 @@ var current_friend_username;
 var msgSymKey;
 var messageUpdateTimer;
 var messageTimeout = 5; //in second
+var menuUpdateTimer;
+var menuTimeout = 6; //in second
+var current_selected_menu;
+var pending_requests = [ 0, 0 ];
 var msgId;
 const warnSymkeyExchangeEvery = 20 //messages
+const page_title = 'PostQ';
 
 function showMessages(friend_username, friend_id, symkey) {
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
@@ -73,38 +78,48 @@ function showMessages(friend_username, friend_id, symkey) {
     $('#messagesouter').show();
   }
   msgId = 0;
-  var msgIduser2 = 0;
 
   //decrypt symmetric key
-  msgSymKey = AESdecryptCBC_arr(symkey, decryptionkey);
+  if (symkey !== undefined)
+    msgSymKey = AESdecryptCBC_arr(symkey, decryptionkey);
  
   $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: current_friend_id },
 
   function(data, status){
-    var newdiv;
+    var newdiv, error_decode;
     $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");
     for(var i=0; i<messages.length; i++) {
       if(messages[i] != "") {
+        error_decode = false;
         var fromTo = messages[i].substring(0,1);
         var msgNonce = messages[i].substring(1, messages[i].indexOf(";"));
         var idAndMsg = messages[i].substring(messages[i].indexOf(";")+1);
         var decIdAndMsg = AESdecryptCTR(idAndMsg, msgSymKey, msgNonce);
-        if(decIdAndMsg.indexOf(";") == -1) //error decoding or outdated symkey
-          continue;
-        var msgIdi = parseInt(decIdAndMsg.substring(0, decIdAndMsg.indexOf(";")));
-        var msg = decIdAndMsg.substring(decIdAndMsg.indexOf(";")+1);
-        if(msgIdi == 00 && decIdAndMsg.indexOf(";") != 1) //error decoding or outdated symkey
-          continue;
-        if(fromTo == '1' && msgIdi > msgId) {
-          msgId = msgIdi;
+        if(decIdAndMsg.indexOf(";") == -1) // Error decoding or outdated symkey
+          error_decode = true;
+        else {
+          var msgIdi = parseInt(decIdAndMsg.substring(0, decIdAndMsg.indexOf(";")));
+          if(isNaN(msgIdi)) // Error decoding or outdated symkey
+            error_decode = true;
+          else
+            var msg = decIdAndMsg.substring(decIdAndMsg.indexOf(";")+1);
+        }
+        if(fromTo == '1') {
           newdiv = $('<div class="msgFromMe"></div>');
-          newdiv.text(msg);
+          if(error_decode)
+            newdiv.text(idAndMsg);
+          else {
+            msgId = msgIdi;
+            newdiv.text(msg);
+          }
           $('#messages').append(newdiv);
-        } else if(fromTo == '0' && msgIdi > msgIduser2){
-          msgIduser2 = msgIdi;
+        } else if(fromTo == '0'){
           newdiv = $('<div class="msgToMe"></div>');
-          newdiv.text(msg);
+          if(error_decode)
+            newdiv.text(idAndMsg);
+          else
+            newdiv.text(msg);
           $('#messages').append(newdiv);
         }
         if(i != 0 && i % warnSymkeyExchangeEvery == 0)
@@ -113,12 +128,11 @@ function showMessages(friend_username, friend_id, symkey) {
     }
 
     $('#messages').scrollTo("max");
-    messageUpdateTimer = setTimeout(function(){showMessages(current_friend_username, current_friend_id, symkey);}, messageTimeout*1000);
+    messageUpdateTimer = setTimeout(function(){showMessages(current_friend_username, current_friend_id);}, messageTimeout*1000);
   });
 }
 
 function changeSymkey() {
-
   $.post("getPublicKey.php", { user: current_friend_username },
     function(data, status){
       if(data.startsWith("Error")) {
@@ -136,7 +150,8 @@ function changeSymkey() {
               send(inputEmail+' changed secret code. All his/her previous messages were discarded. Please accept a new generated new secret in "Friend requests" to continue conversation. If you send further messages they will not be read.');
               setTimeout(function() { displayAlert("#alertMessages","success","Symmetric key changed successfully!"); }, 500);
               setTimeout(function() {   $("#alertMessages").hide();  $("#alertMessages").empty() }, 5000);
-              showMessages(current_friend_username, current_friend_id, symkeyforme);
+              clearTimeout(messageUpdateTimer); //
+              setTimeout(showMessages(current_friend_username, current_friend_id, symkeyforme), 5100);
               generateMenu();
             } else {
               displayAlert("#alertMessages","danger",data);

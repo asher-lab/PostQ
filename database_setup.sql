@@ -63,7 +63,8 @@ CREATE TABLE `messages` (
   `user2` int(11) NOT NULL,
   `messages` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `nonce` binary(16) NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `new_msg` bit NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

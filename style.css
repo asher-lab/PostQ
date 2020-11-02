@@ -199,6 +199,7 @@ li {
   border-radius: 10px;
   white-space: pre-wrap;
   line-height: 1.2;
+  word-break:break-word;
 }
 
 textarea {

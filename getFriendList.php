@@ -20,20 +20,25 @@ if(!$_POST['username'] || !$_POST['password'])
 //check password
 if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === "1")) //loginhelper() needs to return with 1... for successfull login
   die("Authentication failed");
+
+//get user ID
+$userId = getUserId($conn, $_POST['username']);
+if (!is_numeric($userId))
+  die($userId);
   
 // prepare, bind and execute
-$stmt = $conn->prepare("SELECT u2.username, symkeys.user2, symkeys.symkey FROM symkeys, users AS u1, users AS u2 WHERE symkeys.user1 = u1.id AND symkeys.user2 = u2.id AND u1.username = ? ORDER BY u2.username ASC");
-$stmt->bind_param("s", $_POST['username']);
+$stmt = $conn->prepare("SELECT users.username, symkeys.user2, symkeys.symkey, t1.mysum from users, symkeys LEFT JOIN ( SELECT messages.user1 AS myuser, SUM(messages.new_msg) AS mysum FROM messages WHERE messages.user2 = ? GROUP BY myuser ) t1 ON t1.myuser = symkeys.user2 WHERE symkeys.user2 = users.id AND symkeys.user1 = ? ORDER BY users.username ASC");
+$stmt->bind_param("ii", $userId, $userId);
 $stmt->execute();
 if ($stmt->errno)
   die("Error during the execution of the SQL query");
 
 //get the result
-$stmt->bind_result($row[0], $row[1], $row[2]); //$username, $userId, $symkey
+$stmt->bind_result($row[0], $row[1], $row[2], $row[3]); //$username, $userId, $symkey, $new_msg
 
 $f = fopen('php://output', 'w');
 while($stmt->fetch()) {
-  fputcsv($f, $row, ',', '"'); //$username, $userId, $symkey
+  fputcsv($f, $row, ',', '"'); //$username, $userId, $symkey, $new_msg
 }
 
 ?>

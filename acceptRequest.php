@@ -31,6 +31,7 @@ if ($stmt->errno)
 
 if($conn->affected_rows !== 1)
   die("Error - not existing friend requests");
+$stmt->close();
 
 //add my new symkey
 $stmt = $conn->prepare("INSERT INTO symkeys (user1, user2, symkey) VALUES (?, ?, ?)");

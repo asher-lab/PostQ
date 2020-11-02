@@ -83,7 +83,14 @@ function handleFriendReq_event(event){
 function acceptRequest(requestID) {
   var i = parseInt(requestID);
   //NTRU decrypt
-  var plainSymKey = NTRUDecapsulate(requests[i][3], privatekey);
+  var plainSymKey;
+  try {
+    plainSymKey = NTRUDecapsulate(requests[i][3], privatekey);
+  } catch (error) {
+    alert("Bug: " + error);
+    return;
+  }
+
   //AES encrypt the symkey
   var AESSymKey = AESencryptCBC_arr(plainSymKey, decryptionkey);
   //send the symkey back, delete the requests
@@ -119,7 +126,13 @@ function rejectRequest(requestID) {
 function acceptSymkeyRequest(requestID) {
   var i = parseInt(requestID);
   //NTRU decrypt
-  var plainSymKey = NTRUDecapsulate(symkeyrequests[i][3], privatekey);
+  var plainSymKey;
+  try {
+    plainSymKey = NTRUDecapsulate(symkeyrequests[i][3], privatekey);
+  } catch (error) {
+    alert("Bug found: " + error);
+    return;
+  }
   //AES encrypt the symkey
   var AESSymKey = AESencryptCBC_arr(plainSymKey, decryptionkey);
   //send the symkey back, delete the requests
